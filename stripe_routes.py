@@ -11,19 +11,23 @@ YOUR_DOMAIN = 'http://localhost:3000'
 def register_stripe_routes(app):
     @app.route('/create-checkout-session', methods=['POST'])
     def create_checkout_session():
+        data = request.json
+        price_id = data.get('priceId')  
+
+        if not price_id:
+            return jsonify(error="Missing price ID"), 400
+
         try:
             session = stripe.checkout.Session.create(
                 ui_mode='embedded',
                 line_items=[
                     {
-                        'price': 'price_1OIZF4EBiprZstxk4WEIomoJ',  # Your Stripe Price ID
+                        'price': price_id,  
                         'quantity': 1,
                     },
                 ],
-                mode='subscription',
+                mode='payment', 
                 return_url=YOUR_DOMAIN + '/return',
-                #success_url=YOUR_DOMAIN + '/success?session_id={CHECKOUT_SESSION_ID}',
-                #cancel_url=YOUR_DOMAIN + '/cancel',
                 automatic_tax={'enabled': True},
             )
             return jsonify(clientSecret=session.client_secret)
