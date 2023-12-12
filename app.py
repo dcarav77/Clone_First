@@ -2,7 +2,6 @@ from flask import Flask, render_template, send_from_directory
 #import stripe_routes
 from flask_cors import CORS
 import two_stripe_routes
-from flask_mail import Mail
 
 app = Flask(__name__, template_folder='templates', static_folder='react_app/build')
 
@@ -10,9 +9,6 @@ CORS(app)
 
 # Register Stripe routes
 two_stripe_routes.register_stripe_routes(app)
-
-# Initialize and configure mail
-mail = two_stripe_routes.init_mail(app)
 
 @app.route('/')
 def index():
