@@ -1,3 +1,4 @@
+'''
 import os
 from flask import Flask, jsonify, request, redirect
 import stripe
@@ -62,3 +63,4 @@ def register_stripe_routes(app):
          # Include other routes here, such as /session-status from the first script
 
 register_stripe_routes(app)
+'''
