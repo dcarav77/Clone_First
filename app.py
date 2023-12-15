@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, jsonify
 #import stripe_routes
 from flask_cors import CORS
 import two_stripe_routes
@@ -9,6 +9,11 @@ CORS(app)
 
 # Register Stripe routes
 two_stripe_routes.register_stripe_routes(app)
+
+@app.route('/webhook', methods=['POST']) #added this webhook for stripe
+def webhook():
+    print("Webhook from script 1 triggered")
+    return jsonify(success=True)
 
 @app.route('/')
 def index():
