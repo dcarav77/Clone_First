@@ -1,8 +1,17 @@
+from dotenv import load_dotenv
+load_dotenv()  
+
+# Set the absolute path to the .env file
+dotenv_path = '/Users/dustin_caravaglia/Documents/Clone_First/sendgrid.env'
+load_dotenv(dotenv_path)
+
 import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
-os.environ['SENDGRID_API_KEY'] = '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'
+
+print("API Key:", os.environ.get('SENDGRID_API_KEY'))
+
 
 message = Mail(
     from_email='admin@strongallalong.coach',
