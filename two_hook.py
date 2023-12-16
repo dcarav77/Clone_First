@@ -1,3 +1,9 @@
+from dotenv import load_dotenv
+load_dotenv() 
+
+# Set the absolute path to the .env file
+dotenv_path = '/Users/dustin_caravaglia/Documents/Clone_First/sendgrid.env'
+load_dotenv(dotenv_path)
 
 import json
 import os
@@ -30,20 +36,18 @@ def webhook():
             payload, sig_header, endpoint_secret
         )
     except ValueError as e:
-        # Invalid payload
         return 'Invalid payload', 400
     except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
         return 'Invalid signature', 400
 
     # Handle the event
     if event['type'] == 'payment_intent.succeeded':
         payment_intent = event['data']['object']
         customer_email = payment_intent.get('receipt_email')  # or another email field
-
-        # Send an email using Twilio SendGrid
-        send_email(customer_email)
-
+        if customer_email:
+            send_email(customer_email)
+        else:
+            print("No receipt email available for payment intent:", payment_intent['id'])
     else:
         print('Unhandled event type {}'.format(event['type']))
 
@@ -53,8 +57,8 @@ def send_email(recipient_email):
     message = Mail(
         from_email='admin@stronallalong.coach',
         to_emails=recipient_email,
-        subject='Yoooooo payment was successful!',
-        html_content='<strong>Thank you for your payment!</strong>')
+        subject='DOMINOES payment was successful!',
+        html_content='<strong>BRAH Thank you for your payment!</strong>')
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
         response = sg.send(message)
@@ -62,7 +66,7 @@ def send_email(recipient_email):
         print(response.body)
         print(response.headers)
     except Exception as e:
-        print(str(e))
+         print("Error sending email:", e)
 
 if __name__ == '__main__':
     app.run(debug=True)

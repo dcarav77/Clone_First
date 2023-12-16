@@ -10,14 +10,11 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 
-print("API Key:", os.environ.get('SENDGRID_API_KEY'))
-
-
 message = Mail(
     from_email='admin@strongallalong.coach',
     to_emails='dcarav77@gmail.com',  # replace with your test email
     subject='Testing SendGrid',
-    html_content='<strong>Hello, this is a test email!</strong>'
+    html_content='<strong>oh baby this is a test email!</strong>'
 )
 
 try:
