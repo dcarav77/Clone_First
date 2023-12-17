@@ -34,7 +34,31 @@ def register_webhook_routes(app):
             handle_payment_intent_succeeded(event['data']['object'])
         elif event['type'] == 'payment_intent.payment_failed':
             handle_payment_intent_failed(event['data']['object'])
-        # Add more event handlers here...
+        elif event['type'] == 'customer.created':
+            pass #something
+        elif event['type'] == 'customer.updated':
+            pass #something
+        elif event['type'] == 'invoice.payment_succeeded':
+            pass  # Placeholder for future code
+        elif event['type'] == 'invoice.payment_failed':
+            pass  # Placeholder for future code
+        elif event['type'] == 'subscription.created':
+            pass  # Placeholder for future code
+        elif event['type'] == 'subscription.updated':
+            pass  # Placeholder for future code
+        elif event['type'] == 'subscription.deleted':
+            pass  # Placeholder for future code
+        elif event['type'] == 'product.created':
+            pass  # Placeholder for future code
+        elif event['type'] == 'product.updated':
+            pass  # Placeholder for future code
+        elif event['type'] == 'charge.refunded':
+            pass  # Placeholder for future code
+        elif event['type'] == 'payment_method.attached':
+            pass  # Placeholder for future code
+        elif event['type'] == 'payment_method.detached':
+            pass  # Placeholder for future code
+   
 
         return jsonify(success=True)
 
