@@ -9,7 +9,8 @@ stripe.api_key = 'sk_test_51O7mnXEBiprZstxkH0Lhrcv9OGoe1ZiSOHANZvv8L8kICroOFyzVi
 app = Flask(__name__, static_url_path='', static_folder='public')
 
 YOUR_DOMAIN = 'http://localhost:3000'
-CORS(app)  # not sure if I need
+CORS(app)
+
 
 def register_stripe_routes(app):
     @app.route('/create-checkout-session', methods=['POST'])
