@@ -1,3 +1,4 @@
+'''
 from dotenv import load_dotenv
 load_dotenv()  
 
@@ -25,3 +26,4 @@ try:
     print(response.headers)
 except Exception as e:
     print("Error:", e)
+'''

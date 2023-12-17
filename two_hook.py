@@ -1,3 +1,4 @@
+'''
 from dotenv import load_dotenv
 load_dotenv() 
 
@@ -70,3 +71,4 @@ def send_email(recipient_email):
 
 if __name__ == '__main__':
     app.run(debug=True)
+'''

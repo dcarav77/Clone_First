@@ -1,3 +1,4 @@
+'''
 from flask import Flask, jsonify, request
 import stripe
 from sendgrid import SendGridAPIClient
@@ -28,6 +29,7 @@ def webhook():
     except stripe.error.SignatureVerificationError as e:
         return 'Invalid signature', 400
 
+    #Put all your events here
     if event['type'] == 'payment_intent.succeeded':
         payment_intent = event['data']['object']
         customer_email = payment_intent.get('receipt_email') or 'dcarav77@gmail.com'  # Replace with your test email
@@ -50,3 +52,4 @@ def send_email(recipient_email):
 
 if __name__ == '__main__':
     app.run(debug=True)
+'''
