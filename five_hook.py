@@ -1,3 +1,4 @@
+'''
 from flask import Flask, jsonify, request
 import stripe
 from sendgrid import SendGridAPIClient
@@ -64,7 +65,7 @@ def register_webhook_routes(app):
 
     def handle_payment_intent_succeeded(payment_intent):
         customer_email = payment_intent.get('receipt_email') or 'default_email@example.com'
-        send_email(customer_email, 'Payment Successful', '<strong>Thank you for your payment!</strong>')
+        send_email(customer_email, 'Payment Successful', '<strong>Thank you big Dawg!</strong>')
 
     def handle_payment_intent_failed(payment_intent):
         customer_email = payment_intent.get('receipt_email') or 'default_email@example.com'
@@ -82,6 +83,6 @@ def register_webhook_routes(app):
             print("Email sent. Status code:", response.status_code)
         except Exception as e:
             print("Error sending email:", e)
+'''
 
-# if __name__ == '__main__':
-#     webhook_app.run(debug=True) # Commented out, as this will be handled by app.py
+   

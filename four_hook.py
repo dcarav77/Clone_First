@@ -1,3 +1,4 @@
+'''
 from flask import Flask, jsonify, request
 import stripe
 from sendgrid import SendGridAPIClient
@@ -84,3 +85,4 @@ def send_email(recipient_email, subject, content):
 
 if __name__ == '__main__':
     app.run(debug=True)
+'''
