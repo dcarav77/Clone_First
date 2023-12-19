@@ -50,7 +50,7 @@ def register_webhook_routes(app):
 
     def handle_payment_intent_succeeded(payment_intent):
         logging.debug(f"PaymentIntent succeeded: {payment_intent}")
-        customer_email = payment_intent.get('receipt_email')
+        #customer_email = payment_intent.get('receipt_email')
         if not customer_email:
             logging.error(f"Receipt email not found in payment intent: {payment_intent}")
             customer_email = 'default_email@example.com'
