@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, send_from_directory, jsonify
 from flask_cors import CORS
 import stripe
-from checkout import process_info
+#from checkout import process_info
 import two_stripe_routes
 from nine_hook import register_webhook_routes #hook versions
 from dotenv import load_dotenv
@@ -27,9 +27,6 @@ SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 # Register Stripe routes and webhook routes
 two_stripe_routes.register_stripe_routes(app)
 register_webhook_routes(app)
-
-# Register the create checkout session route
-app.route('/create-checkout-session', methods=['POST'])(process_info)
 
 
 @app.route('/')
