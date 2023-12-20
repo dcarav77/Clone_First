@@ -34,19 +34,25 @@ def send_email(recipient_email, subject, content):
 
 def get_customer_email(payment_intent):
     customer_email = payment_intent.get('receipt_email')
-    if not customer_email and 'customer' in payment_intent:
-        try:
-            customer = stripe.Customer.retrieve(payment_intent['customer'])
-            customer_email = customer.get('email')
-        except Exception as e:
-            logging.error(f"Error retrieving customer details: {e}")
-    return customer_email or 'default_email@example.com'
+    
+    if not customer_email:
+        customer_details = payment_intent.get('customer_details')
+        if customer_details:
+            customer_email = customer_details.get('email')
+    
+    return customer_email 
+#or 'default_email@example.com'
 
 def handle_payment_intent_succeeded(payment_intent):
     logging.debug(f"PaymentIntent succeeded: {payment_intent}")
-    #customer_email = get_customer_email(payment_intent)
-    customer_email = "dcarav77@gmail.com"
-    logging.debug(f"Sending success email to: {customer_email}")
+    customer_email = get_customer_email(payment_intent)
+    
+    if customer_email is None:
+        logging.error("No customer email found for payment intent")
+        return
+    
+    
+    #customer_email = "dcarav77@gmail.com"
     send_email(customer_email, 'Payment Successful', '<strong>Thank you for your payment!</strong>')
 
 def handle_payment_intent_failed(payment_intent):
