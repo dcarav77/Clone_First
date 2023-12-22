@@ -30,6 +30,7 @@ def register_stripe_routes(app):
                 mode='payment',
                 return_url=YOUR_DOMAIN + '/return?session_id={CHECKOUT_SESSION_ID}',
                 automatic_tax={'enabled': True},
+                phone_number_collection={'enabled': True},
             )
             return jsonify(clientSecret=session.client_secret)
         except Exception as e:
