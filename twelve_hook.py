@@ -60,7 +60,7 @@ def handle_checkout_session_completed(event):
     logging.debug(f"Extracted phone number: {phone_number}")
 
     if email:
-        send_email(email, 'Purchase Completed', '<strong>Thank you for your purchase!</strong>')
+        send_email(email, 'Purchase Completed', '<strong>Next Steps:</strong>')
     if phone_number:
         send_sms(phone_number, 'Dustin is the man!')
 
