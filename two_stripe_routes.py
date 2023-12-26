@@ -13,7 +13,7 @@ YOUR_DOMAIN = 'https://strongallalong.coach' #changed from localhost
 CORS(app)
 
 
-def register_stripe_routes(app):
+def register_stripe_routes(app): 
     @app.route('/api/create-checkout-session', methods=['POST'])
     def create_checkout_session():
         data = request.json
