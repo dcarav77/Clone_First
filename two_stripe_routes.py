@@ -14,7 +14,7 @@ CORS(app)
 
 
 def register_stripe_routes(app):
-    @app.route('/create-checkout-session', methods=['POST'])
+    @app.route('/api/create-checkout-session', methods=['POST'])
     def create_checkout_session():
         data = request.json
         price_id = data.get('priceId')
