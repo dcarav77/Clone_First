@@ -3,12 +3,12 @@ from flask import Flask, jsonify, request, redirect
 import stripe
 from flask_cors import CORS  # not sure if I need
 
-# Set your secret key. Remember to switch to your live secret key in production!
-stripe.api_key = 'sk_test_51O7mnXEBiprZstxkH0Lhrcv9OGoe1ZiSOHANZvv8L8kICroOFyzVidtNYAau6C3LFtdZAtNy1xStifVvIyKPYAlS00fsbC5wi7'
+stripe.api_key = os.getenv('STRIPE_API_KEY')
 
 app = Flask(__name__, static_url_path='', static_folder='public')
 
-YOUR_DOMAIN = 'http://localhost:3000'
+
+YOUR_DOMAIN = os.getenv('FRONTEND_DOMAIN', 'http://localhost:3000')
 CORS(app)
 
 

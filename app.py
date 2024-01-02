@@ -2,24 +2,29 @@ import os
 from flask import Flask, render_template, send_from_directory, jsonify
 from flask_cors import CORS
 import stripe
-#from checkout import process_info
+
 import two_stripe_routes
+<<<<<<< HEAD
 from thirteen_hook import register_webhook_routes #hook versions
+=======
+from thirteen_hook import register_webhook_routes 
+>>>>>>> TwoWorking
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv('/Users/dustin_caravaglia/Documents/Clone_First/sendgrid.env')
 
 endpoint_secret = os.getenv('STRIPE_ENDPOINT_SECRET')
-print(f"Endpoint Secret: {endpoint_secret}")  # For debugging
-
+  
 
 app = Flask(__name__, template_folder='templates', static_folder='react_app/build')
 CORS(app)
 
-# Stripe and SendGrid configuration
 
+<<<<<<< HEAD
  #MAKE SURE TO CHANGE TO REAL MONEY AP KEY
+=======
+>>>>>>> TwoWorking
 stripe.api_key = os.getenv('STRIPE_API_KEY')
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
