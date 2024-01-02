@@ -4,11 +4,7 @@ from flask_cors import CORS
 import stripe
 
 import two_stripe_routes
-<<<<<<< HEAD
-from thirteen_hook import register_webhook_routes #hook versions
-=======
-from thirteen_hook import register_webhook_routes 
->>>>>>> TwoWorking
+from twelve_hook import register_webhook_routes #hook versions
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -21,11 +17,8 @@ app = Flask(__name__, template_folder='templates', static_folder='react_app/buil
 CORS(app)
 
 
-<<<<<<< HEAD
- #MAKE SURE TO CHANGE TO REAL MONEY AP KEY
-=======
->>>>>>> TwoWorking
-stripe.api_key = os.getenv('STRIPE_API_KEY')
+#stripe.api_key = os.getenv('STRIPE_API_KEY') #I had to hardcode it to work
+stripe.api_key = 'sk_test_51O7mnXEBiprZstxkH0Lhrcv9OGoe1ZiSOHANZvv8L8kICroOFyzVidtNYAau6C3LFtdZAtNy1xStifVvIyKPYAlS00fsbC5wi7'
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 
