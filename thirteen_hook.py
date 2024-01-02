@@ -15,7 +15,6 @@ load_dotenv('/Users/dustin_caravaglia/Documents/Clone_First/sendgrid.env')
 
 stripe.api_key = os.getenv('STRIPE_API_KEY')
 
-
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')

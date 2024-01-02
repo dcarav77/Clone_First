@@ -11,8 +11,7 @@ from dotenv import load_dotenv
 load_dotenv('/Users/dustin_caravaglia/Documents/Clone_First/sendgrid.env')
 
 endpoint_secret = os.getenv('STRIPE_ENDPOINT_SECRET')
-print(f"Endpoint Secret: {endpoint_secret}")  
-
+  
 
 app = Flask(__name__, template_folder='templates', static_folder='react_app/build')
 CORS(app)
