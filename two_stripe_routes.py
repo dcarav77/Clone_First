@@ -13,7 +13,8 @@ CORS(app)
 
 
 def register_stripe_routes(app):
-    @app.route('/create-checkout-session', methods=['POST'])
+    #@app.route('/create-checkout-session', methods=['POST'])
+    @app.route('/api/create-checkout-session', methods=['POST'])
     def create_checkout_session():
         data = request.json
         price_id = data.get('priceId')
@@ -36,7 +37,8 @@ def register_stripe_routes(app):
         except Exception as e:
             return jsonify(error=str(e)), 403
 
-    @app.route('/session-status', methods=['GET'])
+    #@app.route('/session-status', methods=['GET'])
+    @app.route('/api/session-status', methods=['GET'])
     def session_status():
         session_id = request.args.get('session_id')
         print("Received session_id:", session_id)
