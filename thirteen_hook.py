@@ -100,6 +100,6 @@ def register_webhook_routes(app):
 
         return jsonify(success=True)
 
-if __name__ == '__main__':
-    register_webhook_routes(webhook_app)
-    webhook_app.run(debug=True)
+#if __name__ == '__main__':
+    #register_webhook_routes(webhook_app)
+    #webhook_app.run(debug=True)

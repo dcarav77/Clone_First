@@ -7,13 +7,12 @@ stripe.api_key = os.getenv('STRIPE_API_KEY')
 
 app = Flask(__name__, static_url_path='', static_folder='public')
 
+# Set up CORS to only allow your React app's domain
+CORS(app, resources={r"/api/*": {"origins": "https://strongallalong.coach"}})
 
 YOUR_DOMAIN = os.getenv('FRONTEND_DOMAIN', 'http://localhost:3000')
-CORS(app)
-
 
 def register_stripe_routes(app):
-    #@app.route('/create-checkout-session', methods=['POST'])
     @app.route('/api/create-checkout-session', methods=['POST'])
     def create_checkout_session():
         data = request.json
@@ -37,7 +36,7 @@ def register_stripe_routes(app):
         except Exception as e:
             return jsonify(error=str(e)), 403
 
-    #@app.route('/session-status', methods=['GET'])
+    
     @app.route('/api/session-status', methods=['GET'])
     def session_status():
         session_id = request.args.get('session_id')
