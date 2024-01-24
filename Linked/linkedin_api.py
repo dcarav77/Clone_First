@@ -12,7 +12,7 @@ redirect_uri = 'https://localhost:5000/auth/linkedin/callback'  # Use your actua
 def generate_linkedin_auth_url():
     response_type = 'code'
     state = 'dcarav77'  # Use a unique session state value
-    scope = 'openid profile email'
+    scope = 'openid profile email w_member_social r_liteprofile'
     return f'https://www.linkedin.com/oauth/v2/authorization?response_type={response_type}&client_id={client_id}&redirect_uri={redirect_uri}&state={state}&scope={scope}'
 
 # LinkedIn initiation route
