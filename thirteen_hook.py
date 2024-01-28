@@ -1,11 +1,15 @@
 import logging
 from flask import Flask, jsonify, request
+from pymongo import MongoClient
 import stripe
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from twilio.rest import Client
 import os
 from dotenv import load_dotenv
+from pymongo import MongoClient
+
+
 
 # Setup logging configuration
 logging.basicConfig(level=logging.DEBUG)
@@ -38,6 +42,7 @@ def send_email(recipient_email, subject, content):
 def send_sms(to_number, body):
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
     try:
+        logging.info(f"Attempting to send SMS to {to_number} with body: '{body}'")
         message = client.messages.create(
             body=body,
             from_=TWILIO_PHONE_NUMBER,
@@ -53,15 +58,38 @@ def get_email_from_event(event):
 def get_phone_number_from_event(event):
     return event.get('customer_details', {}).get('phone')
 
-def handle_checkout_session_completed(event):
+def handle_checkout_session_completed(event, mongo):
+    logging.info("Processing checkout session completed event")
+    session_id = event.get('id') 
     email = get_email_from_event(event)
     phone_number = get_phone_number_from_event(event)
+
+    logging.info(f"Session ID for opt-in check: {session_id}")
+    
+     # Retrieve opt-in status from MongoDB
+    
+    opt_in_data = mongo.db.opt_in_statuses.find_one({"session_id": session_id})
+    #opt_in_sms = opt_in_data.get('opt_in') if opt_in_data else False
+
+    if opt_in_data:
+        logging.info(f"Opt-in data retrieved from MongoDB: {opt_in_data}")
+        opt_in_sms = opt_in_data.get('opt_in', False)
+    else:
+        logging.warning(f"No opt-in data found for session ID: {session_id}")
+        opt_in_sms = False
+
+    
     logging.debug(f"Extracted email: {email}")
     logging.debug(f"Extracted phone number: {phone_number}")
+    logging.debug(f"Opt-in SMS flag: {opt_in_sms}")
 
-    if email:
-  
-        email_content = '''
+    if email and opt_in_sms:
+        logging.info(f"Preparing to send SMS to {phone_number}")
+        send_sms(phone_number, 'Your purchase with Strong all Along is complete! Please check your email for further instructions.')
+
+    else:
+        if email:
+            email_content = '''
     <strong>Next Steps:</strong><br>
     1. <a href="https://chat.whatsapp.com/C2EN3GQhQ3d7trKtUCSEFz">Join the WhatsApp  Reception group</a><br>
     2. <a href="https://chat.whatsapp.com/HREyWIoKAJe0FB5o6YfVH9">Join the Group Chat</a><br>
@@ -71,11 +99,13 @@ def handle_checkout_session_completed(event):
     '''
     send_email(email, 'Welcome to Strong all Along - Your Next Steps', email_content)
 
-    if phone_number:
+    if phone_number and opt_in_sms:
+        logging.info(f"Preparing to send SMS to {phone_number}")
         send_sms(phone_number, 'Your purchase with Strong all Along is complete! Please check your email for further instructions.')
+       
+        
 
-
-def register_webhook_routes(app):
+def register_webhook_routes(app, mongo):
     @app.route('/webhook', methods=['POST'])
     def webhook():
         payload = request.data
@@ -87,7 +117,7 @@ def register_webhook_routes(app):
             logging.debug(f"Webhook event received: {event}")
 
             if event['type'] == 'checkout.session.completed':
-                handle_checkout_session_completed(event['data']['object'])
+                handle_checkout_session_completed(event['data']['object'], mongo)
         except ValueError as e:
             logging.error("Invalid payload", exc_info=e)
             return 'Invalid payload', 400
