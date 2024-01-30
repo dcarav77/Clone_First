@@ -2,6 +2,8 @@ import logging
 import stripe
 from flask import jsonify, request
 
+from thirteen_hook import send_sms
+
 def register_stripe_routes(app, mongo):
     print("Registering stripe routes...")
 
@@ -52,3 +54,37 @@ def register_stripe_routes(app, mongo):
                 logging.error(f"Error updating opt-in status: {e}")
                 return jsonify({"error": str(e)}), 500
         return jsonify({"error": "Invalid request"}), 400
+
+    @app.route('/api/trigger-sms', methods=['POST'])
+    def trigger_sms_notification():
+        data = request.json
+        session_id = data.get('sessionId')
+        
+        if not session_id:
+            logging.error("Missing session ID")
+            return jsonify(error="Missing session ID"), 400
+        
+        logging.info(f"Received session ID for SMS trigger: {session_id}")
+
+        try:
+            opt_in_data = mongo.db.opt_in_statuses.find_one({"session_id": session_id})
+            logging.info(f"Opt-in data from MongoDB: {opt_in_data}")
+            
+            if opt_in_data and opt_in_data.get('opt_in', False):
+                phone_number = opt_in_data.get('phone_number')
+                logging.info(f"Phone number from opt-in data: {phone_number}")
+                
+                if phone_number:
+                    send_sms(phone_number, 'Your purchase with Strong all Along is complete!')
+                    return jsonify({"message": "SMS notification sent"}), 200
+                else:
+                    return jsonify({"message": "Phone number not found"}), 404
+            else:
+                logging.error("Phone number not found in opt-in data")
+                return jsonify({"message": "Opt-in not found or SMS opt-in is false"}), 404
+        
+        except Exception as e:
+            logging.error(f"Error in triggering SMS notification: {e}")
+            return jsonify({"error": str(e)}), 500
+
+
