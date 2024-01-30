@@ -60,35 +60,42 @@ def get_phone_number_from_event(event):
 
 def handle_checkout_session_completed(event, mongo):
     logging.info("Processing checkout session completed event")
-    session_id = event.get('id') 
-    email = get_email_from_event(event)
-    phone_number = get_phone_number_from_event(event)
+    session_id = event.get('id')
 
-    logging.info(f"Session ID for opt-in check: {session_id}")
-    
-     # Retrieve opt-in status from MongoDB
-    
+    try:
+        # Fetch the checkout session from Stripe
+        session = stripe.checkout.Session.retrieve(session_id)
+        email = session.get('customer_details', {}).get('email')
+        phone_number = session.get('customer_details', {}).get('phone')
+        logging.debug(f"Retrieved session data: {session}")
+    except Exception as e:
+        logging.error(f"Error retrieving Stripe session: {e}")
+        return jsonify({"error": str(e)}), 500
+
+    email = session.get('customer_details', {}).get('email')
+    phone_number = session.get('customer_details', {}).get('phone')
+
+    logging.info(f"Session ID: {session_id}")
+    logging.info(f"Email: {email}")
+    logging.info(f"Phone Number: {phone_number}")
+
+    # Check for opt-in status in MongoDB and update with phone number
     opt_in_data = mongo.db.opt_in_statuses.find_one({"session_id": session_id})
-    #opt_in_sms = opt_in_data.get('opt_in') if opt_in_data else False
-
     if opt_in_data:
         logging.info(f"Opt-in data retrieved from MongoDB: {opt_in_data}")
-        opt_in_sms = opt_in_data.get('opt_in', False)
+        #opt_in_sms = opt_in_data.get('opt_in', False)
+
+    if phone_number:
+        result = mongo.db.opt_in_statuses.update_one(
+                {"session_id": session_id},
+                {"$set": {"phone_number": phone_number}}
+            )
+        logging.info(f"MongoDB update result: Matched {result.matched_count}, Modified {result.modified_count}")
     else:
         logging.warning(f"No opt-in data found for session ID: {session_id}")
-        opt_in_sms = False
+        #opt_in_sms = False
 
-    
-    logging.debug(f"Extracted email: {email}")
-    logging.debug(f"Extracted phone number: {phone_number}")
-    logging.debug(f"Opt-in SMS flag: {opt_in_sms}")
-
-    if email and opt_in_sms:
-        logging.info(f"Preparing to send SMS to {phone_number}")
-        send_sms(phone_number, 'Your purchase with Strong all Along is complete! Please check your email for further instructions.')
-
-    else:
-        if email:
+    if email:
             email_content = '''
     <strong>Next Steps:</strong><br>
     1. <a href="https://chat.whatsapp.com/C2EN3GQhQ3d7trKtUCSEFz">Join the WhatsApp  Reception group</a><br>
@@ -97,12 +104,15 @@ def handle_checkout_session_completed(event, mongo):
     4. Message me on WhatsApp with your height, weight, age, and level of fitness. I will respond with a custom diet plan and fitness regiment tailored for you.<br>
     5. From there we will schedule one on one meetings for three month members.
     '''
-    send_email(email, 'Welcome to Strong all Along - Your Next Steps', email_content)
+            send_email(email, 'Welcome to Strong all Along - Your Next Steps', email_content)
 
-    if phone_number and opt_in_sms:
-        logging.info(f"Preparing to send SMS to {phone_number}")
-        send_sms(phone_number, 'Your purchase with Strong all Along is complete! Please check your email for further instructions.')
-       
+
+    #if phone_number and opt_in_sms:
+        #logging.info(f"Preparing to send SMS to {phone_number}")
+        #send_sms(phone_number, 'Your purchase with Strong all Along is complete! Please check your email for further instructions.')
+
+    return jsonify(success=True)
+
         
 
 def register_webhook_routes(app, mongo):
@@ -127,7 +137,8 @@ def register_webhook_routes(app, mongo):
         except Exception as e:
             logging.error("Unhandled exception", exc_info=e)
             return jsonify(error=str(e)), 500
-
+ 
+        
         return jsonify(success=True)
 
 #if __name__ == '__main__':
