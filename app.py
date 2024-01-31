@@ -12,6 +12,7 @@ from flask_pymongo import PyMongo
 
 # Load environment variables
 load_dotenv('/Users/dustin_caravaglia/Documents/Clone_First/sendgrid.env')
+load_dotenv('/Users/dustin_caravaglia/Documents/Clone_First/.env')
 
 endpoint_secret = os.getenv('STRIPE_ENDPOINT_SECRET')
   
@@ -20,7 +21,7 @@ app = Flask(__name__, template_folder='templates', static_folder='react_app/buil
 CORS(app)
 
 # Set up MongoDB
-app.config["MONGO_URI"] = "mongodb+srv://dcarav77:bambam66@serverlessinstance0.f9h2amf.mongodb.net/Fitness_App"
+app.config["MONGO_URI"] = os.getenv('MONGO_URI')
 mongo = PyMongo(app)  # Initialize PyMongo with app
 
 stripe.api_key = os.getenv('STRIPE_API_KEY')
