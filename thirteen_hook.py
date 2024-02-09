@@ -102,7 +102,7 @@ def handle_checkout_session_completed(event, mongo):
     2. <a href="https://chat.whatsapp.com/HREyWIoKAJe0FB5o6YfVH9">Join the Group Chat</a><br>
     3. Read the group descriptions, here you will find my info<br>
     4. Message me on WhatsApp with your height, weight, age, and level of fitness. I will respond with a custom diet plan and fitness regiment tailored for you.<br>
-    5. From there we will schedule one on one meetings for three month members.
+    5. From there we will schedule the Zoom Call.
     '''
             send_email(email, 'Welcome to Strong all Along - Your Next Steps', email_content)
 
