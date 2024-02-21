@@ -80,20 +80,28 @@ def handle_checkout_session_completed(event, mongo):
     logging.info(f"Phone Number: {phone_number}")
 
     # Check for opt-in status in MongoDB and update with phone number
-    opt_in_data = mongo.db.opt_in_statuses.find_one({"session_id": session_id})
+    #opt_in_data = mongo.db.opt_in_statuses.find_one({"session_id": session_id})
+    opt_in_data = mongo.db.opt_in_statuses.find_one(
+        {"session_id": session_id},
+        {"_id": 0, "opt_in": 1, "phone_number": 1}
+    )
+    
     if opt_in_data:
         logging.info(f"Opt-in data retrieved from MongoDB: {opt_in_data}")
-        #opt_in_sms = opt_in_data.get('opt_in', False)
+        existing_phone_number = opt_in_data.get('phone_number')  # Get existing phone number
 
-    if phone_number:
-        result = mongo.db.opt_in_statuses.update_one(
-                {"session_id": session_id},
-                {"$set": {"phone_number": phone_number}}
-            )
-        logging.info(f"MongoDB update result: Matched {result.matched_count}, Modified {result.modified_count}")
+        # Only update if the phone number has changed
+        if phone_number and phone_number != existing_phone_number:
+            result = mongo.db.opt_in_statuses.update_one(
+                    {"session_id": session_id},
+                    {"$set": {"phone_number": phone_number}}
+                )
+            logging.info(f"MongoDB update result: Matched {result.matched_count}, Modified {result.modified_count}")
+        else:
+            logging.info("Phone number unchanged, no update necessary")
     else:
         logging.warning(f"No opt-in data found for session ID: {session_id}")
-        #opt_in_sms = False
+
 
     if email:
             email_content = '''
